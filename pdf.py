@@ -25,7 +25,7 @@ def process_pdf(file):
         max_characters=4000,
         new_after_n_chars=3800,
         combile_text_under_n_chars=2000,
-        analyzed_image_output_dir_path=path + "output/",
+        analyzed_image_output_dir_path=path + "output/", #これが上手くいかない（指定したパスに画像が保存されない→figureディレクトリに保存される）
     )
     #小さなサイズのファイルを削除する
     delete_small_files(path + "output/")
@@ -63,9 +63,9 @@ def summarize_images():
     image_summaries = [] #画像の要約を格納するリスト
     img_prompt = "画像を日本語で詳細に説明してください" #画像の要約を取得するためのプロンプト
 
-    for img_file in sorted(os.listdir(path + "output/")):
+    for img_file in sorted(os.listdir(path + "figures/")):
         if img_file.endswith('.jpg'):
-            img_path = os.path.join(path + "output/", img_file) #画像のパスを取得する
+            img_path = os.path.join(path + "figures/", img_file) #画像のパスを取得する
             base64_image = encode_image(img_path) #画像をbase64形式に変換する
             img_base64_list.append(base64_image) #画像をbase64形式でリストに追加する
             image_summaries.append(image_summarize(base64_image, img_prompt)) #画像の要約をリストに追加する
