@@ -69,7 +69,7 @@ importlib-metadata==6.11.0
 importlib_resources==6.1.2
 iopath==0.1.10
 ipykernel==6.29.3
-ipython==8.22.1
+ipython==8.18.1
 isoduration==20.11.0
 jedi==0.19.1
 Jinja2==3.1.3
