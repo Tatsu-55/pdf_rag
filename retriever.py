@@ -8,8 +8,8 @@ import pickle
 import chromadb
 
 #vector storeに格納されたデータを永続化する設定を行う
-persist_directory = "./sample_1"
-collection_name = "multi_modal_rag"
+persist_directory = "./sample_2" #修正後→sample2に格納
+collection_name = "multi_modal_rag_modified" #修正後→_modifiedに格納
 docstore_filename = "./docstore.pickle"
 client = chromadb.PersistentClient(path=persist_directory)
 vectorstore = Chroma(collection_name=collection_name, embedding_function=OpenAIEmbeddings(), client=client)

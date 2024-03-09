@@ -18,32 +18,40 @@ def process_pdf(file):
     #PDFから要素を取得する
     raw_pdf_elements = partition_pdf(
         filename=path + file,
-        languages=["jpn"],
-        extract_images_in_pdf=True, 
+        languages=["jpn"], #日本語の言語を使用する(OCRの設の設定も含む)
+        strategy="hi_res", #ストラテジーの設定
+        extract_images_in_pdf=True,
+        include_metadata=True, #メタデータを含める
         infer_table_structure=True,
-        chunking_strategy="by_title",
-        max_characters=4000,
-        new_after_n_chars=3800,
-        combile_text_under_n_chars=2000,
-        analyzed_image_output_dir_path=path + "output/", #これが上手くいかない（指定したパスに画像が保存されない→figureディレクトリに保存される）
+        extract_image_block_types=["Image"], #画像のブロックタイプを指定する
+        extract_image_block_to_payload=False,
+        extract_image_block_output_dir=path + "figures/",
     )
+    print("raw_pdf_element", raw_pdf_elements)
     #小さなサイズのファイルを削除する
-    delete_small_files(path + "output/")
+    # delete_small_files(path + "figures/")
 
     #テーブル要素とテキスト要素を取得する
     tables = []
     texts = []
+    others = []
     for element in raw_pdf_elements:
-        if "unstructured.documents.elements.Table" in str(type(element)):
+        if "unstructured.documents.elements.Table" in str(type(element)): #テーブル要素を取得する(Table)
             tables.append(str(element))
-        elif "unstructured.documents.elements.CompositeElement" in str(type(element)):
+        elif "unstructured.documents.elements.NarrativeText" in str(type(element)): #テキスト要素を取得する(NarrativeText)
             texts.append(str(element))
+        else:
+            others.append(str(element))
+            
     #テーブル要素とテキスト要素を返す
+    print("tables", tables)
+    print("texts", texts)
+    print("others", others)
     return tables, texts
 
 
 #小さなサイズのファイルを削除する関数を作成する
-def delete_small_files(directory_path, max_size_kb=20):
+def delete_small_files(directory_path, max_size_kb=5):
     max_size_bytes = max_size_kb * 1024
     for filename in os.listdir(directory_path):
         #ファイルパスを取得する
@@ -63,15 +71,15 @@ def summarize_images():
     image_summaries = [] #画像の要約を格納するリスト
     img_prompt = "画像を日本語で詳細に説明してください" #画像の要約を取得するためのプロンプト
 
-    for img_file in sorted(os.listdir(path + "figures/")):
-        if img_file.endswith('.jpg'):
-            img_path = os.path.join(path + "figures/", img_file) #画像のパスを取得する
-            base64_image = encode_image(img_path) #画像をbase64形式に変換する
-            img_base64_list.append(base64_image) #画像をbase64形式でリストに追加する
-            image_summaries.append(image_summarize(base64_image, img_prompt)) #画像の要約をリストに追加する
+    for img_file in sorted(os.listdir(path + "figures/")):#figuresディレクトリにある画像ファイルを参照する
+        img_path = os.path.join(path + "figures/", img_file) #画像のパスを取得する
+        base64_image = encode_image(img_path) #画像をbase64形式に変換する
+        img_base64_list.append(base64_image) #画像をbase64形式でリストに追加する
+        image_summaries.append(image_summarize(base64_image, img_prompt)) #画像の要約をリストに追加する
 
+    print("img_base64_list", img_base64_list)
+    print("image_summaries", image_summaries)
     return img_base64_list, image_summaries 
-
 #画像をbase64形式に変換する関数を作成する
 def encode_image(image_path):
     with open(image_path, "rb") as image_file:
