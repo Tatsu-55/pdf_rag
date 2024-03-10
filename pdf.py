@@ -18,7 +18,7 @@ def process_pdf(file):
     #PDFから要素を取得する
     raw_pdf_elements = partition_pdf(
         filename=path + file,
-        languages=["jpn"], #日本語の言語を使用する(OCRの設の設定も含む)
+        languages=["jpn", "eng"], #日本語の言語を使用する(OCRの設の設定も含む)
         strategy="hi_res", #ストラテジーの設定
         extract_images_in_pdf=True,
         include_metadata=True, #メタデータを含める
@@ -45,13 +45,16 @@ def process_pdf(file):
             
     #テーブル要素とテキスト要素を返す
     print("tables", tables)
+    print("-------------------")
     print("texts", texts)
+    print("-------------------")
     print("others", others)
-    return tables, texts
+    print("-------------------")
+    return tables, texts, others
 
 
 #小さなサイズのファイルを削除する関数を作成する
-def delete_small_files(directory_path, max_size_kb=5):
+def delete_small_files(directory_path, max_size_kb=20):
     max_size_bytes = max_size_kb * 1024
     for filename in os.listdir(directory_path):
         #ファイルパスを取得する
@@ -66,7 +69,7 @@ def delete_small_files(directory_path, max_size_kb=5):
 
 
 #base64エンコードした画像と画像の要約テキストをリストに追加する関数を作成する
-def summarize_images():
+"""def summarize_images():
     img_base64_list = [] #画像をbase64形式で格納するリスト
     image_summaries = [] #画像の要約を格納するリスト
     img_prompt = "画像を日本語で詳細に説明してください" #画像の要約を取得するためのプロンプト
@@ -95,9 +98,10 @@ def image_summarize(img_base64, prompt):
         ])
     ])
     return msg.content
-
+"""
 
 #テーブルの要約テキストを返す関数を作成する
+#テストではテーブルのサマリもなくていい
 def summarize_tables(tables):
 
     #プロンプトを作成する

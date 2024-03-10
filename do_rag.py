@@ -7,8 +7,8 @@ from rag import rag_application
 import pickle
 
 docstore_filename = "./docstore.pickle"
-collection_name = "multi_modal_rag"
-directory = "./sample_1"
+collection_name = "multi_modal_rag_modified"
+directory = "./sample_2"
 
 def do_rag(question):
 

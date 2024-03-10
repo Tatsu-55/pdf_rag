@@ -17,7 +17,7 @@ docstore = InMemoryStore()
 
 
 #ベクトルストアを生成する関数を作成する(テキスト、テーブル、画像の要素の追加を含む)
-def create_vectorstore(texts, table_summaries, image_summaries, tables, img_base64_list):
+def create_vectorstore(texts, table_summaries, others, image_summaries, tables, img_base64_list):
 
     id_key='doc_id'
     retriever = MultiVectorRetriever(vectorstore=vectorstore, docstore=docstore, id_key=id_key)
@@ -33,6 +33,12 @@ def create_vectorstore(texts, table_summaries, image_summaries, tables, img_base
     for i, s in enumerate(table_summaries):
         retriever.vectorstore.add_documents([Document(page_content=s, metadata={id_key: table_ids[i]})])
     retriever.docstore.mset(list(zip(table_ids, tables)))
+
+    #その他の要素を追加する
+    other_ids = [str(uuid.uuid4()) for _ in texts]
+    for i, s in enumerate(tables):
+        retriever.vectorstore.add_documents([Document(page_content=s, metadata={id_key: other_ids[i]})])
+    retriever.docstore.mset(list(zip(other_ids, others)))
 
     #画像のサマリと元要素を追加する
     img_ids = [str(uuid.uuid4()) for _ in img_base64_list]

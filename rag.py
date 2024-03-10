@@ -10,6 +10,7 @@ from IPython.display import display, HTML
 #RAGを実行する関数を作成する
 def rag_application(question, retriever):
     docs = retriever.get_relevant_documents(question) #質問に関連するチャンク文書を取ってくる
+    print("docs", docs)
     docs_by_type = split_image_text_types(docs) 
     print(docs_by_type)
 

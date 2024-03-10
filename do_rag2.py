@@ -7,8 +7,8 @@ from rag import rag_application
 import pickle
 
 docstore_filename = "./docstore.pickle"
-collection_name = "multi_modal_rag"
-directory = "./sample_1"
+collection_name = "multi_modal_rag_modified"
+directory = "./sample_2"
 
 #テスト用
 def do_rag():
@@ -21,7 +21,7 @@ def do_rag():
     retriever = MultiVectorRetriever(vectorstore=vectorstore, docstore=docstore, id_key='doc_id')
     
     #クエリに対してRAGを実行する(回答を返す)
-    query = "参照系AIに取り組んでいる東北大学生は誰ですか？"
+    query = "Adansonsについて教えてください。"
     print(f"Q: {query}")
     result = rag_application(query, retriever)
     print(f"A: {result}\n\n")
